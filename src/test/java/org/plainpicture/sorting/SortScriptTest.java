@@ -2,17 +2,25 @@
 package org.plainpicture.sorting;
 
 import junit.framework.TestCase;
-import org.elasticsearch.search.lookup.SearchLookup;
-import org.elasticsearch.search.lookup.DocLookup;
 import java.util.HashMap;
 import java.util.Map;
 
 public class SortScriptTest extends TestCase {
   public void testSortScript() {
-    Map<String, Object> params = new HashMap<String, Object>();
+    Map params = new HashMap();
 
-    params.put("country_id", 1);
-    params.put("creator_country_id", 1);
+    params.put("base_field", "rank");
+
+    Map creatorBoosts = new HashMap();
+
+    creatorBoosts.put(1, 1.0);
+
+    Map imageBoosts = new HashMap();
+
+    imageBoosts.put(1, 1.0);
+
+    params.put("creator_boosts", creatorBoosts);
+    params.put("image_boosts", imageBoosts);
 
     assertNotNull(new SortScript(params));
   }

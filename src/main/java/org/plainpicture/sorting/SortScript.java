@@ -12,7 +12,7 @@ public class SortScript extends AbstractDoubleSearchScript {
   private String baseField = null;
   private Map boosts = null;
 
-  public SortScript(@Nullable Map<String,Object> params) {
+  public SortScript(@Nullable Map<String, Object> params) {
     if(params != null) {
       baseField = (String)params.get("base_field");
       boosts = (Map)params.get("boosts");

@@ -10,7 +10,7 @@ import org.plainpicture.sorting.SortScript;
 import java.util.Map;
 
 public class SortScriptFactory implements NativeScriptFactory {
-  @Override public ExecutableScript newScript(@Nullable Map<String,Object> params) {
+  @Override public ExecutableScript newScript(@Nullable Map<String, Object> params) {
     return new SortScript(params);
   }
 }

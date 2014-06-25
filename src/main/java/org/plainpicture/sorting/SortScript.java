@@ -46,12 +46,12 @@ public class SortScript extends AbstractDoubleSearchScript {
     if(!doc().containsKey(field))
       return -1;
 
-    ScriptDocValues.Longs tmp = (ScriptDocValues.Longs)doc().get(field);
+    ScriptDocValues tmp = (ScriptDocValues)doc().get(field);
 
     if(tmp.isEmpty())
       return -1;
 
-    return tmp.getValue();
+    return ((ScriptDocValues.Longs)tmp).getValue();
   }
 }
 

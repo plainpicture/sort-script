@@ -24,14 +24,17 @@ public class SortScript extends AbstractDoubleSearchScript {
     long imageCountryId = getCountryId("country_id");
     long creatorCountryId = getCountryId("creator_country_id");
 
-    System.out.println((double)getBase() / (getBoost(imageCountryId, "image_boost") * getBoost(creatorCountryId, "creator_boost")));
-
     return (double)getBase() / (getBoost(imageCountryId, "image_boost") * getBoost(creatorCountryId, "creator_boost"));
   }
 
   private double getBoost(Long countryId, String kind) {
     try {
-      Object result = ((Map)boosts.get(countryId.toString())).get(kind);
+      Map map = (Map)boosts.get(countryId.toString());
+
+      if(map == null)
+        return 1.0;
+
+      Object result = map.get(kind);
 
       if(result == null)
         return 1.0;

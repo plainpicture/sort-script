@@ -11,11 +11,13 @@ import java.util.Map;
 public class SortScript extends AbstractDoubleSearchScript {
   private String baseField = null;
   private Map boosts = null;
+  private Object range = null;
 
   public SortScript(@Nullable Map<String, Object> params) {
     if(params != null) {
       baseField = (String)params.get("base_field");
       boosts = (Map)params.get("boosts");
+      range = params.get("range");
     }
   }
 
@@ -24,7 +26,15 @@ public class SortScript extends AbstractDoubleSearchScript {
     long imageCountryId = getCountryId("country_id");
     long creatorCountryId = getCountryId("creator_country_id");
 
-    return ((double)getBase()) - getBoost(imageCountryId, "image_boost") - getBoost(creatorCountryId, "creator_boost");
+    return getBase() - getBoost(imageCountryId, "image_boost") - getBoost(creatorCountryId, "creator_boost");
+  }
+
+  private double getRange() {
+    try {
+      return ((Double)range).doubleValue();
+    } catch(Exception e) {
+      return 0.0;
+    }
   }
 
   private double getBoost(Long countryId, String kind) {
@@ -39,17 +49,17 @@ public class SortScript extends AbstractDoubleSearchScript {
       if(result == null)
         return 0.0;
 
-      return ((double)result) * 0.05 * 1000000.0;
+      return ((double)result) * getRange();
     } catch(Exception e) {
       return 0.0;
     }
   }
 
-  private long getBase() {
+  private double getBase() {
     try {
-      return docFieldLongs(baseField).getValue();
+      return (double)docFieldLongs(baseField).getValue();
     } catch(Exception e) {
-      return 1;
+      return 1.0;
     }
   }
 

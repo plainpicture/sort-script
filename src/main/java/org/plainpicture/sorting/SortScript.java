@@ -24,7 +24,7 @@ public class SortScript extends AbstractDoubleSearchScript {
     long imageCountryId = getCountryId("country_id");
     long creatorCountryId = getCountryId("creator_country_id");
 
-    return (double)getBase() / (getBoost(imageCountryId, "image_boost") * getBoost(creatorCountryId, "creator_boost"));
+    return ((double)getBase()) - getBoost(imageCountryId, "image_boost") - getBoost(creatorCountryId, "creator_boost");
   }
 
   private double getBoost(Long countryId, String kind) {
@@ -32,16 +32,16 @@ public class SortScript extends AbstractDoubleSearchScript {
       Map map = (Map)boosts.get(countryId.toString());
 
       if(map == null)
-        return 1.0;
+        return 0.0;
 
       Object result = map.get(kind);
 
       if(result == null)
-        return 1.0;
+        return 0.0;
 
-      return (double)result;
+      return ((double)result) * 0.05 * 1000000.0;
     } catch(Exception e) {
-      return 1.0;
+      return 0.0;
     }
   }
 

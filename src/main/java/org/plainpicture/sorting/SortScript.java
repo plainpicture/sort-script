@@ -25,8 +25,9 @@ public class SortScript extends AbstractDoubleSearchScript {
   public double runAsDouble() {
     long imageCountryId = getCountryId("country_id");
     long creatorCountryId = getCountryId("creator_country_id");
+    double collectionScore = getCollectionScore();
 
-    return getBase() - getBoost(imageCountryId, "image_boost") - getBoost(creatorCountryId, "creator_boost");
+    return getBase() - (getBoost(imageCountryId, "image_boost") * (1.0 - collectionScore) * getRand()) - (getBoost(creatorCountryId, "creator_boost") * (1.0 - collectionScore) * getRand());
   }
 
   private double getRange() {
@@ -73,6 +74,22 @@ public class SortScript extends AbstractDoubleSearchScript {
       return ((ScriptDocValues.Longs)tmp).getValue();
     } catch(Exception e) {
       return -1;
+    }
+  }
+
+  private double getCollectionScore() {
+    try {
+      return (double)docFieldDoubles("collection_score").getValue();
+    } catch(Exception e) {
+      return 0.0;
+    }
+  }
+
+  private double getRand() {
+    try {
+      return (double)docFieldDoubles("rand").getValue();
+    } catch(Exception e) {
+      return 1.0;
     }
   }
 }

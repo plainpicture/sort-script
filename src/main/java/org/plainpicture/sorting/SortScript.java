@@ -26,6 +26,10 @@ public class SortScript extends AbstractDoubleSearchScript {
     long imageCountryId = getCountryId("country_id");
     long creatorCountryId = getCountryId("creator_country_id");
     double collectionScore = getCollectionScore();
+    long primaryRank = getPrimaryRank();
+
+    if(primaryRank != -1)
+      return (double)primaryRank;
 
     return getBase() - (getBoost(imageCountryId, "image_boost") * (1.0 - collectionScore) * getRand()) - (getBoost(creatorCountryId, "creator_boost") * (1.0 - collectionScore) * getRand());
   }
@@ -90,6 +94,19 @@ public class SortScript extends AbstractDoubleSearchScript {
       return (double)docFieldDoubles("rand").getValue();
     } catch(Exception e) {
       return 1.0;
+    }
+  }
+
+  private long getPrimaryRank() {
+    try {
+      ScriptDocValues tmp = (ScriptDocValues)doc().get("primary_rank");
+
+      if(tmp.isEmpty())
+        return -1;
+
+      return ((ScriptDocValues.Longs)tmp).getValue();
+    } catch(Exception e) {
+      return -1;
     }
   }
 }

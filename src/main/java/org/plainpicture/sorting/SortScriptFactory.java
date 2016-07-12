@@ -13,5 +13,9 @@ public class SortScriptFactory implements NativeScriptFactory {
   @Override public ExecutableScript newScript(@Nullable Map<String, Object> params) {
     return new SortScript(params);
   }
+
+  @Override public boolean needsScores() {
+    return true;
+  }
 }
 

@@ -7,5 +7,5 @@ mkdir -p /usr/local/elasticsearch/plugins/sort-script
 cp resources/plugin-descriptor.properties /usr/local/elasticsearch/plugins/sort-script
 cp target/sort-script-*.jar /usr/local/elasticsearch/plugins/sort-script
 
-chown -R elasticsearch:elasticsearch elasticsearch:elasticsearch /usr/local/elasticsearch/plugins/sort-script
+chown -R elasticsearch:elasticsearch /usr/local/elasticsearch/plugins/sort-script
 

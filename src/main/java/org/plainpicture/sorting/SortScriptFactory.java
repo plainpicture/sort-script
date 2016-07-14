@@ -15,7 +15,7 @@ public class SortScriptFactory implements NativeScriptFactory {
   }
 
   @Override public boolean needsScores() {
-    return true;
+    return false;
   }
 }
 

@@ -10,7 +10,7 @@ public class SortScriptPlugin extends Plugin {
   }
 
   @Override public String description() {
-    return "Script to support geo sorting";
+    return "sort-script";
   }
 
   public void onModule(ScriptModule module) {

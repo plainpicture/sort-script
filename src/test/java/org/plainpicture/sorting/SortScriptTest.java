@@ -11,6 +11,7 @@ public class SortScriptTest extends TestCase {
 
     params.put("base_field", "rank");
     params.put("shift", 0.1);
+    params.put("offset", 1000000.0);
     params.put("range", 1000000.0);
 
     Map creatorBoosts = new HashMap();

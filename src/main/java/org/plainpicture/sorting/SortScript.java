@@ -12,6 +12,7 @@ public class SortScript extends AbstractDoubleSearchScript {
   private String baseField = null;
   private Map boosts = null;
   private double range = 0;
+  private double offset = 0;
   private double shift = 0;
 
   public SortScript(@Nullable Map<String, Object> params) {
@@ -19,6 +20,7 @@ public class SortScript extends AbstractDoubleSearchScript {
       baseField = (String)params.get("base_field");
       boosts = (Map)params.get("boosts");
       range = ((Double)params.get("range")).doubleValue();
+      offset = ((Double)params.get("offset")).doubleValue();
       shift = ((Double)params.get("shift")).doubleValue();
     }
   }
@@ -32,7 +34,10 @@ public class SortScript extends AbstractDoubleSearchScript {
     if(primaryRank != -1)
       return (double)primaryRank;
 
-    return getBase() - getBoost(imageCountryId, "image_boost") - getBoost(creatorCountryId, "creator_boost") + (range * shift * (getRand() - 0.5));
+    double base = getBase();
+    double normalizedBase = base - offset;
+
+    return base - getBoost(imageCountryId, "image_boost") * normalizedBase - getBoost(creatorCountryId, "creator_boost") * normalizedBase + (range * shift * (getRand() - 0.5));
   }
 
   private double getRand() {
@@ -55,7 +60,7 @@ public class SortScript extends AbstractDoubleSearchScript {
       if(result == null)
         return 0.0;
 
-      return ((double)result) * range;
+      return (double)result;
     } catch(Exception e) {
       return 0.0;
     }

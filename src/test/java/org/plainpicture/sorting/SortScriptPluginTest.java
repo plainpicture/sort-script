@@ -1,24 +1,15 @@
 
 package org.plainpicture.sorting;
 
-import org.elasticsearch.script.ScriptModule;
+import org.elasticsearch.script.NativeScriptFactory;
+import java.util.Arrays;
+import java.util.List;
+
 import junit.framework.TestCase;
 
 public class SortScriptPluginTest extends TestCase {
-  public void onModule(ScriptModule module) {
-    module.registerScript("sort-script", SortScriptFactory.class);
-  }
-
-  public void testName() {
-    assertEquals("sort-script", new SortScriptPlugin().name());
-  }
-
-  public void testDescription() {
-    assertEquals("sort-script", new SortScriptPlugin().description());
-  }
-
-  public void testOnModule() {
-    // Can't be tested
+  public void testGetNativeScripts() {
+    assertNotNull(new SortScriptPlugin().getNativeScripts());
   }
 }
 

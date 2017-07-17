@@ -22,7 +22,7 @@
     <dependency>
       <groupId>org.elasticsearch</groupId>
       <artifactId>elasticsearch</artifactId>
-      <version>2.3.4</version>
+      <version>5.4.3</version>
     </dependency>
 
     <dependency>

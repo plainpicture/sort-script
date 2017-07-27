@@ -6,6 +6,8 @@ import org.elasticsearch.script.ExecutableScript;
 import org.elasticsearch.script.NativeScriptFactory;
 import org.elasticsearch.script.AbstractDoubleSearchScript;
 import org.elasticsearch.index.fielddata.ScriptDocValues;
+import org.elasticsearch.index.fielddata.ScriptDocValues.Doubles;
+import org.elasticsearch.index.fielddata.ScriptDocValues.Longs;
 import java.util.Map;
 
 public class SortScript extends AbstractDoubleSearchScript {
@@ -35,79 +37,66 @@ public class SortScript extends AbstractDoubleSearchScript {
   }
 
   private double getRange() {
-    try {
-      return ((Double)range).doubleValue();
-    } catch(Exception e) {
-      return 0.0;
-    }
+    return ((Double)range).doubleValue();
   }
 
   private double getBoost(Long countryId, String kind) {
-    try {
-      Map map = (Map)boosts.get(countryId.toString());
+    Map map = (Map)boosts.get(countryId.toString());
 
-      if(map == null)
-        return 0.0;
-
-      Object result = map.get(kind);
-
-      if(result == null)
-        return 0.0;
-
-      return ((double)result) * getRange();
-    } catch(Exception e) {
+    if(map == null)
       return 0.0;
-    }
+
+    Object result = map.get(kind);
+
+    if(result == null)
+      return 0.0;
+
+    return ((double)result) * getRange();
   }
 
   private double getBase() {
-    try {
-      return (double)docFieldLongs(baseField).getValue();
-    } catch(Exception e) {
+    Doubles tmp = docFieldDoubles(baseField);
+
+    if(tmp.isEmpty())
       return 1.0;
-    }
+
+    return tmp.getValue();
   }
 
   private long getCountryId(String field) {
-    try {
-      ScriptDocValues tmp = (ScriptDocValues)doc().get(field);
+    Longs tmp = docFieldLongs(field);
 
-      if(tmp.isEmpty())
-        return -1;
-
-      return ((ScriptDocValues.Longs)tmp).getValue();
-    } catch(Exception e) {
+    if(tmp.isEmpty())
       return -1;
-    }
+
+    return tmp.getValue();
   }
 
   private double getCollectionScore() {
-    try {
-      return (double)docFieldDoubles("collection_score").getValue();
-    } catch(Exception e) {
+    Doubles tmp = docFieldDoubles("collection_score");
+
+    if(tmp.isEmpty())
       return 0.0;
-    }
+
+    return tmp.getValue();
   }
 
   private double getRand() {
-    try {
-      return (double)docFieldDoubles("rand").getValue();
-    } catch(Exception e) {
+    Doubles tmp = docFieldDoubles("rand");
+
+    if(tmp.isEmpty())
       return 1.0;
-    }
+
+    return tmp.getValue();
   }
 
   private long getPrimaryRank() {
-    try {
-      ScriptDocValues tmp = (ScriptDocValues)doc().get("primary_rank");
+    Longs tmp = docFieldLongs("primary_rank");
 
-      if(tmp.isEmpty())
-        return -1;
-
-      return ((ScriptDocValues.Longs)tmp).getValue();
-    } catch(Exception e) {
+    if(tmp.isEmpty())
       return -1;
-    }
+
+    return tmp.getValue();
   }
 }
 

@@ -31,7 +31,7 @@ public class SortScript extends AbstractDoubleSearchScript {
     if(primaryRank != -1)
       return (double)primaryRank;
 
-    return getBase() - (getBoost(imageCountryId, "image_boost") * (1.0 - collectionScore) * getRand()) - (getBoost(creatorCountryId, "creator_boost") * (1.0 - collectionScore) * getRand());
+    return getBase() - (getBoost(imageCountryId, "image_boost") * collectionScore * getRand()) - (getBoost(creatorCountryId, "creator_boost") * collectionScore * getRand());
   }
 
   private double getRange() {

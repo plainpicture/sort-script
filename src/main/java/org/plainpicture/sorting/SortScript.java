@@ -55,12 +55,12 @@ public class SortScript extends AbstractDoubleSearchScript {
   }
 
   private double getBase() {
-    Doubles tmp = docFieldDoubles(baseField);
+    Longs tmp = docFieldLongs(baseField);
 
     if(tmp.isEmpty())
       return 1.0;
 
-    return tmp.getValue();
+    return (double)tmp.getValue();
   }
 
   private long getCountryId(String field) {

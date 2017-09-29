@@ -10,40 +10,38 @@ import java.util.Map;
 
 public class SortScript extends AbstractDoubleSearchScript {
   private String baseField = null;
-  private Map boosts = null;
-  private Object range = null;
+  private Map countryBoosts = null;
+
+  private long offset = 0;
+  private long maxCountryBenefit = 0;
 
   public SortScript(@Nullable Map<String, Object> params) {
     if(params != null) {
       baseField = (String)params.get("base_field");
-      boosts = (Map)params.get("boosts");
-      range = params.get("range");
+      countryBoosts = (Map)params.get("country_boosts");
+
+      offset = (long)params.get("offset");
+      maxCountryBenefit = (long)params.get("max_country_benefit");
     }
   }
 
   @Override
   public double runAsDouble() {
-    long imageCountryId = getCountryId("country_id");
-    long creatorCountryId = getCountryId("creator_country_id");
     long primaryRank = getPrimaryRank();
 
-    if(primaryRank != -1)
+    if(primaryRank != -1 && primaryRank < offset)
       return (double)primaryRank;
 
-    return getBase() - (getBoost(imageCountryId, "image_boost") * getRand()) - (getBoost(creatorCountryId, "creator_boost") * getRand());
+    long imageCountryId = getCountryId("keyword_country_id");
+    long creatorCountryId = getCountryId("creator_country_id");
+    double rand = getRand();
+
+    return getBase() - (getCountryBoost(imageCountryId, "image_boost") * maxCountryBenefit * 0.5 * rand) - (getCountryBoost(creatorCountryId, "creator_boost") * maxCountryBenefit * 0.5 * rand);
   }
 
-  private double getRange() {
+  private double getCountryBoost(Long countryId, String kind) {
     try {
-      return ((Double)range).doubleValue();
-    } catch(Exception e) {
-      return 0.0;
-    }
-  }
-
-  private double getBoost(Long countryId, String kind) {
-    try {
-      Map map = (Map)boosts.get(countryId.toString());
+      Map map = (Map)countryBoosts.get(countryId.toString());
 
       if(map == null)
         return 0.0;
@@ -53,7 +51,7 @@ public class SortScript extends AbstractDoubleSearchScript {
       if(result == null)
         return 0.0;
 
-      return ((double)result) * getRange();
+      return (double)result;
     } catch(Exception e) {
       return 0.0;
     }
@@ -63,7 +61,7 @@ public class SortScript extends AbstractDoubleSearchScript {
     try {
       return (double)docFieldLongs(baseField).getValue();
     } catch(Exception e) {
-      return 1.0;
+      return 0.0;
     }
   }
 

@@ -10,6 +10,8 @@ public class SortScriptTest extends TestCase {
     Map params = new HashMap();
 
     params.put("base_field", "rank");
+    params.put("offset", (long)1);
+    params.put("max_country_benefit", (long)100);
 
     Map creatorBoosts = new HashMap();
 

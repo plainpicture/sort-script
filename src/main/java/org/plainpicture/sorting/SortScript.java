@@ -30,6 +30,7 @@ public class SortScript extends AbstractDoubleSearchScript {
   private double countryRand, countryWeight;
   private double collectionRand, collectionWeight;
   private double supplierRand, supplierWeight;
+  private boolean ignorePrimaryRank;
   private Random random;
 
   private long now;
@@ -72,12 +73,14 @@ public class SortScript extends AbstractDoubleSearchScript {
     supplierRand = (double)params.get("supplier_rand");
     supplierWeight = (double)params.get("supplier_weight");
 
+    ignorePrimaryRank = (boolean)params.get("ignore_primary_rank");
+
     now = System.currentTimeMillis();
     random = new Random();
   }
 
   public double runAsDouble() {
-    long primaryRank = getPrimaryRank();
+    long primaryRank = ignorePrimaryRank ? -1 : getPrimaryRank();
     double baseScore = 0.0;
 
     random.setSeed((int)(getRand() * 100000));
@@ -88,7 +91,7 @@ public class SortScript extends AbstractDoubleSearchScript {
       else
         baseScore = 1.0 - ((double)primaryRank - offset) / offset;
     } else {
-      baseScore = baseScore();
+      baseScore = baseWeight > 0 ? baseScore() : 0.0;
     }
 
     return offset

@@ -24,6 +24,7 @@ public class SortScriptTest extends TestCase {
     params.put("collection_rand", 1.0);
     params.put("supplier_weight", 1.0);
     params.put("supplier_rand", 1.0);
+    params.put("ignore_primary_rank", false);
 
     Map countryBoost = new HashMap();
     countryBoost.put("image_boost", 1.0);

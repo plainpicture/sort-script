@@ -168,7 +168,7 @@ public class SortScript extends AbstractDoubleSearchScript {
     if(value == null || value.isEmpty())
       return 0.0;
 
-    return Math.pow(Math.pow(((double)value.getValue() - 978307200000.0) / ((double)now - 978307200000.0), 0.75), 2);
+    return Math.pow(Math.pow(1.0 - ((double)value.getValue() - 978307200000.0) / ((double)now - 978307200000.0), 0.75), 2);
   }
 
   private long getCountryId(String field) {

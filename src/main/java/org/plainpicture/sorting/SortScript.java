@@ -98,18 +98,17 @@ public class SortScript extends AbstractDoubleSearchScript {
       + baseScore * (1.0 - baseRand * random.nextDouble()) * baseWeight
       + ageScore() * (1.0 - ageRand * random.nextDouble()) * ageWeight
       + keywordScore() * (1.0 - keywordRand * random.nextDouble()) * keywordWeight
-      + (countryWeight > 0 ? getCountryBoost(getCountryId("keyword_country_id"), 0) * (1.0 - countryRand * random.nextDouble()) * countryWeight * 0.5 + getCountryBoost(getCountryId("creator_country_id"), 1) * (1.0 - countryRand * random.nextDouble()) * countryWeight * 0.5 : 0.0)
+      + (
+          countryWeight <= 0 ? 0.0 :
+            getCountryBoost(getCountryId("keyword_country_id"), 0) * (1.0 - countryRand * random.nextDouble()) * countryWeight * 0.5 +
+            getCountryBoost(getCountryId("creator_country_id"), 1) * (1.0 - countryRand * random.nextDouble()) * countryWeight * 0.5
+        )
       + (collectionWeight > 0 ? collectionScore() * (1.0 - collectionRand * random.nextDouble()) * collectionWeight : 0.0)
       + (supplierWeight > 0 ? supplierScore() * (1.0 - supplierRand * random.nextDouble()) * supplierWeight : 0.0);
   }
 
   private double baseScore() {
-    ScriptDocValues.Doubles value = docFieldDoubles("score");
-
-    if(value == null || value.isEmpty())
-      return 0;
-
-    return value.getValue();
+    return getDouble("score", 0.0);
   }
 
   private Double getCountryBoost(Long countryId, int index) {
@@ -122,21 +121,11 @@ public class SortScript extends AbstractDoubleSearchScript {
   }
 
   private double collectionScore() {
-    ScriptDocValues.Doubles value = docFieldDoubles("collection_score");
-
-    if(value == null || value.isEmpty())
-      return 0.0;
-
-    return value.getValue();
+    return getDouble("collection_score", 0.0);
   }
 
   private double supplierScore() {
-    ScriptDocValues.Doubles value = docFieldDoubles("supplier_score");
-
-    if(value == null || value.isEmpty())
-      return 0.0;
-
-    return value.getValue();
+    return getDouble("supplier_score", 0.0);
   }
 
   private double keywordScore() {
@@ -146,7 +135,7 @@ public class SortScript extends AbstractDoubleSearchScript {
     if(keywords.size() == 0)
       return 0.0;
 
-    IndexField termScores = indexLookup().get(keywordField);
+    IndexField termScores = termScores(keywordField);
 
     for(String keyword : keywords) {
       for(TermPosition termPosition : termScores.get(keyword, IndexLookup.FLAG_PAYLOADS | IndexLookup.FLAG_CACHE)) {
@@ -162,38 +151,45 @@ public class SortScript extends AbstractDoubleSearchScript {
     return res / (double)n;
   }
 
-  private double ageScore() {
-    ScriptDocValues.Longs value = docFieldLongs("batched_at");
+  protected IndexField termScores(String fieldName) {
+    return indexLookup().get(fieldName);
+  }
 
-    if(value == null || value.isEmpty())
+  private double ageScore() {
+    Long value = getLong("batched_at", -1l);
+
+    if(value == -1)
       return 0.0;
 
-    return Math.pow(1.0 - Math.pow(((double)now - Math.min((double)now, (double)value.getValue())) / ((double)now - 978307200000.0), 0.75), 2.0);
+    return Math.pow(1.0 - Math.pow(((double)now - Math.min((double)now, (double)value)) / ((double)now - 978307200000.0), 0.75), 2.0);
   }
 
   private long getCountryId(String field) {
-    ScriptDocValues.Longs value = docFieldLongs(field);
-
-    if(value.isEmpty())
-      return -1;
-
-    return value.getValue();
+    return getLong(field, -1l);
   }
 
   private double getRand() {
-    ScriptDocValues.Doubles value = docFieldDoubles("rand");
+    return getDouble("rand", 0.0d);
+  }
 
-    if(value.isEmpty())
-      return 0.0;
+  private long getPrimaryRank() {
+    return getLong("primary_rank", -1l);
+  }
+
+  protected double getDouble(String fieldName, double defaultValue) {
+    ScriptDocValues.Doubles value = docFieldDoubles(fieldName);
+
+    if(value == null || value.isEmpty())
+      return defaultValue;
 
     return value.getValue();
   }
 
-  private long getPrimaryRank() {
-    ScriptDocValues.Longs value = docFieldLongs("primary_rank");
+  protected long getLong(String fieldName, long defaultValue) {
+    ScriptDocValues.Longs value = docFieldLongs(fieldName);
 
-    if(value.isEmpty())
-      return -1;
+    if(value == null || value.isEmpty())
+      return defaultValue;
 
     return value.getValue();
   }

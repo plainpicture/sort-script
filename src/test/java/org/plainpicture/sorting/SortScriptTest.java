@@ -232,4 +232,3 @@ public class SortScriptTest extends TestCase {
     assertEquals(0.88791, testSortScript.runAsDouble(), 0.0001);
   }
 }
-

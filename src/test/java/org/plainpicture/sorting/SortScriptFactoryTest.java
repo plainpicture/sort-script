@@ -9,4 +9,3 @@ public class SortScriptFactoryTest extends TestCase {
     // nothing
   }
 }
-

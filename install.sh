@@ -8,4 +8,3 @@ cp resources/plugin-descriptor.properties /usr/local/elasticsearch/plugins/sort-
 cp target/sort-script-*.jar /usr/local/elasticsearch/plugins/sort-script
 
 chown -R elasticsearch:elasticsearch /usr/local/elasticsearch/plugins/sort-script
-

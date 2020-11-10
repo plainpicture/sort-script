@@ -194,4 +194,3 @@ public class SortScript extends AbstractDoubleSearchScript {
     return value.getValue();
   }
 }
-

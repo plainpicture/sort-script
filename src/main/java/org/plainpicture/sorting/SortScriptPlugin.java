@@ -13,4 +13,3 @@ public class SortScriptPlugin extends Plugin implements ScriptPlugin {
     return Arrays.asList((NativeScriptFactory)new SortScriptFactory());
   }
 }
-

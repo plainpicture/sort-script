@@ -22,4 +22,3 @@ public class SortScriptFactory implements NativeScriptFactory {
     return "sort_script";
   }
 }
-

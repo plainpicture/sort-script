@@ -12,4 +12,3 @@ public class SortScriptPluginTest extends TestCase {
     assertNotNull(new SortScriptPlugin().getNativeScripts());
   }
 }
-
